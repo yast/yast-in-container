@@ -1,0 +1,63 @@
+#! /bin/bash
+
+# Helper script which runs YaST in a container.
+#
+# Usage:
+#   yast2_container <options> <yast_module>
+#
+# The script needs to be started as "root" unless you use Docker with non-root
+# access enabled.
+#
+# All command line arguments are passed to YaST.
+#
+
+set -e
+
+echo "** WARNING: This is an experimental tool, do not use it in production systems!!"
+echo "** There is a risk of breaking the system or data loss!"
+echo
+
+# check whether the host system is compatible with the container image,
+# can be disabled with VERSION_CHECK=0, use on your risk!!
+. /etc/os-release
+if [ "$VERSION_CHECK" != "0" ] && { [ "$VERSION_ID" != "15.4" ] || { [ "$ID" != "sles" ] && [ "$ID" != "opensuse-leap" ]; }; }; then
+    echo "ERROR: Unsupported system: $PRETTY_NAME" >&2
+    echo "Only 'openSUSE Leap 15.4' or 'SLES-15-SP4' systems are curently supported"
+    echo "On your risk you can disable this check by setting VERSION_CHECK=0"
+    exit 1
+fi
+
+# use podman, if not available try docker
+if command -v podman &> /dev/null; then
+    TOOL="podman"
+elif command -v docker &> /dev/null; then
+    TOOL="docker"
+else
+    echo "ERROR: Container runtime not installed, install 'podman' or 'docker' package" >&2
+    exit 1
+fi
+
+# when called as "yast_container" or when $DISPLAY is not set use the smaller ncurses image
+if [ "$(basename "$0")" == "yast_container" ] || [ -z "$DISPLAY" ]; then
+    EXTRA_OPTIONS=()
+    IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-ncurses-leap_latest"
+else
+    # otherwise use the bigger Qt image and start the container with extra
+    # options to allow accessing the local X server from inside the container
+    EXTRA_OPTIONS=(-e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v "$XAUTHORITY:$XAUTHORITY:ro" -e XAUTHORITY)
+    IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-qt-leap_latest"
+fi
+
+# make sure the container image is up to date
+$TOOL pull $IMAGE_NAME
+
+# the default command to run
+: "${CMD=/sbin/yast2}"
+# where is the host system root mounted in the container
+CHROOT_DIR="/mnt"
+
+# start the container
+$TOOL run -it --privileged --pid=host --ipc=host --net=host \
+    -v /dev:/dev -v /:$CHROOT_DIR "${EXTRA_OPTIONS[@]}" \
+    -e ZYPP_LOCKFILE_ROOT=$CHROOT_DIR -e YAST_SCR_TARGET=$CHROOT_DIR \
+    --rm $IMAGE_NAME "$CMD" "$@"
