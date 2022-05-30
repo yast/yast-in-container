@@ -1,7 +1,7 @@
 # Experimental YaST Management Container
 
-[![CI](https://github.com/yast/yast-container/actions/workflows/ci.yml/badge.svg)](
-https://github.com/yast/yast-container/actions/workflows/ci.yml)
+[![CI](https://github.com/yast/yast-in-container/actions/workflows/ci.yml/badge.svg)](
+https://github.com/yast/yast-in-container/actions/workflows/ci.yml)
 
 This is a proof of concept (PoC) project for testing how to run YaST in
 a container to manage the host system.
