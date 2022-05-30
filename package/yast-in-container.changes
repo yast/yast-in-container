@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon May 30 16:50:16 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
+
+- Print the executed podman/docker command for easier
+  testing or debugging
+- 4.5.1
+
+-------------------------------------------------------------------
 Fri May 27 08:39:16 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
 
 - Initial version (bsc#1199840)
