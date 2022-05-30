@@ -56,6 +56,9 @@ $TOOL pull $IMAGE_NAME
 # where is the host system root mounted in the container
 CHROOT_DIR="/mnt"
 
+# print the podman/docker command started for easier testing or debugging
+set -x
+
 # start the container
 $TOOL run -it --privileged --pid=host --ipc=host --net=host \
     -v /dev:/dev -v /:$CHROOT_DIR "${EXTRA_OPTIONS[@]}" \
