@@ -3,7 +3,15 @@
 # Helper script which runs YaST in a container.
 #
 # Usage:
-#   yast2_container <options> <yast_module>
+#   yast_container <options> <yast_module> <module_arguments>
+#     - uses ncurses UI (text mode)
+#   yast2_container <options> <yast_module> <module_arguments>
+#     - uses Qt UI (graphical mode)
+#   yast2_web_container <options> <yast_module> <module_arguments>
+#     - uses Qt UI (graphical mode) with HTTPS access
+#     - you need to configure the access password first, see the README.md
+#     - open https://localhost:4984/ in browser after starting the script
+#     - by default it uses a self-signed certificate
 #
 # The script needs to be started as "root" unless you use Docker with non-root
 # access enabled.
@@ -12,6 +20,18 @@
 #
 
 set -e
+
+# adds special podman command line parameters to read the secrets with
+# passwords and certificates
+podman_secret_params () {
+    arr=( "yast_vnc_password" "yast_vnc_password_bin" "vnc_ssl_cert")
+    for name in "${arr[@]}"; do
+        # check if the secret exists
+        if podman secret inspect "$name" >/dev/null 2>&1; then
+            EXTRA_OPTIONS+=("--secret" "$name")
+        fi
+    done
+}
 
 echo "** WARNING: This is an experimental tool, do not use it in production systems!!"
 echo "** There is a risk of breaking the system or data loss!"
@@ -37,9 +57,29 @@ else
     exit 1
 fi
 
+# specific docker/podman options
+EXTRA_OPTIONS=()
+# the default command to run
+: "${CMD=/sbin/yast2}"
+# the extra command arguments
+EXTRA_ARGS=()
+
+# when called as "yast2_web_container" use the web image
+if [ "$(basename "$0")" == "yast2_web_container" ]; then
+    IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-web-leap_latest:latest"
+
+    # add podman secret parameters, unfortunately the docker secrets are only
+    # supported in the swarm (cluster) mode :-/
+    if [ "$TOOL" = "podman" ]; then
+        podman_secret_params
+    fi
+
+    # run YaST in fullscreen without extra borders, just like in standard installation
+    if [ "$CMD" = "/sbin/yast2" ]; then
+        EXTRA_ARGS=( "--fullscreen" "--noborder" )
+    fi
 # when called as "yast_container" or when $DISPLAY is not set use the smaller ncurses image
-if [ "$(basename "$0")" == "yast_container" ] || [ -z "$DISPLAY" ]; then
-    EXTRA_OPTIONS=()
+elif [ "$(basename "$0")" == "yast_container" ] || [ -z "$DISPLAY" ]; then
     IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-ncurses-leap_latest"
 else
     # otherwise use the bigger Qt image and start the container with extra
@@ -51,8 +91,6 @@ fi
 # make sure the container image is up to date
 $TOOL pull $IMAGE_NAME
 
-# the default command to run
-: "${CMD=/sbin/yast2}"
 # where is the host system root mounted in the container
 CHROOT_DIR="/mnt"
 
@@ -63,4 +101,4 @@ set -x
 $TOOL run -it --privileged --pid=host --ipc=host --net=host \
     -v /dev:/dev -v /:$CHROOT_DIR "${EXTRA_OPTIONS[@]}" \
     -e ZYPP_LOCKFILE_ROOT=$CHROOT_DIR -e YAST_SCR_TARGET=$CHROOT_DIR \
-    --rm $IMAGE_NAME "$CMD" "$@"
+    --rm $IMAGE_NAME "$CMD" "$@" "${EXTRA_ARGS[@]}"

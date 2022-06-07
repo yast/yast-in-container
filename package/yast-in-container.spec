@@ -48,6 +48,7 @@ the host system.
 # install main scripts
 mkdir -p %{buildroot}/%{_sbindir}
 install -m 755 src/scripts/yast2_container %{buildroot}/%{_sbindir}
+install -m 755 src/scripts/yast2_web_container %{buildroot}/%{_sbindir}
 install -m 755 src/scripts/yast_container %{buildroot}/%{_sbindir}
 
 # install license and documentation
@@ -60,6 +61,7 @@ install -m 644 README.md %{buildroot}/%{_docdir}/%{name}
 mkdir -p %{buildroot}/sbin
 ln -s ../%{_sbindir}/yast_container  %{buildroot}/sbin
 ln -s ../%{_sbindir}/yast2_container %{buildroot}/sbin
+ln -s ../%{_sbindir}/yast2_web_container %{buildroot}/sbin
 %endif
 
 %files
