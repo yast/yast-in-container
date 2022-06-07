@@ -17,7 +17,7 @@
 
 
 Name:           yast-in-container
-Version:        4.5.1
+Version:        4.5.2
 Release:        0
 Summary:        Experimental package for running YaST in a container
 License:        GPL-2.0-only
@@ -51,6 +51,14 @@ install -m 755 src/scripts/yast2_container %{buildroot}/%{_sbindir}
 install -m 755 src/scripts/yast2_web_container %{buildroot}/%{_sbindir}
 install -m 755 src/scripts/yast_container %{buildroot}/%{_sbindir}
 
+# install desktop file
+mkdir -p %{buildroot}/%{_datadir}/applications
+install -m 644 desktop/org.opensuse.YaST-in-container.desktop %{buildroot}/%{_datadir}/applications
+
+# install icons
+mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/scalable/apps
+install -m 644 src/icons/hicolor/scalable/apps/* %{buildroot}/%{_datadir}/icons/hicolor/scalable/apps
+
 # install license and documentation
 mkdir -p %{buildroot}/%{_docdir}/%{name}
 install -m 644 COPYING %{buildroot}/%{_docdir}/%{name}
@@ -73,6 +81,12 @@ ln -s ../%{_sbindir}/yast2_web_container %{buildroot}/sbin
 %if !0%{?usrmerged}
 /sbin/yast*_container
 %endif
+
+# desktop file
+%{_datadir}/applications/*.desktop
+
+# icons
+%{_datadir}/icons/hicolor
 
 # license and documentation
 %doc %dir %{_docdir}/%{name}
