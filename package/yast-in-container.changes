@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Tue Jun  7 08:30:54 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
+
+- Added "yast2_web_container" script which runs YaST inside
+  a container with web (HTTPS) access
+- Added *.desktop file to start containerized YaST from desktop
+- 4.5.2
+
+-------------------------------------------------------------------
 Mon May 30 16:50:16 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
 
 - Print the executed podman/docker command for easier

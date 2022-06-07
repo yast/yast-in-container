@@ -88,13 +88,17 @@ cd yast-in-container/src/scripts
 
 ## Details
 
-This repository provides two helper scripts, `yast_container` and
-`yast2_container`. The first runs the specified YaST module using text (ncurses)
-UI, the second one uses graphical UI (Qt), just like the usual `yast` and
-`yast2` scripts do.
+This repository provides several  helper scripts
+
+- `yast_container` - runs YaST with the ncurses (text mode) UI
+- `yast2_container` - runs YaST with the Qt (graphical mode) UI
+- `yast2_web_container` - runs YaST inside Web session, open the
+  https://localhost:4984 URL in a web browser, see more
+  [details below](#web-https-access)
 
 The scripts download the container image from OBS and then run the specified
-YaST module in the container.
+YaST module in the container. If no YaST module is specified then the YaST
+control center is started.
 
 The container is automatically deleted after finishing YaST, if you want to
 inspect the container you have to start it manually.
@@ -178,6 +182,82 @@ The YaST log is written into `/var/log/YaST2/y2log` in the host as usually.
 The libzypp lock (`/var/run/zypp.pid`) is also created in the hosts system,
 this avoids running multiple instances of the package management at once.
 
+## Web (HTTPS) Access
+
+The `yast2_web_container` script sets up a web access to the running YaST.
+It runs the YaST using the graphical UI but the UI is accessed via a web
+interface instead of the local X server.
+
+That obviously means the web browser will display the usual Qt UI, there will
+be no special web UI with modern features like responsive design or similar.
+
+### Setting the Access Password
+
+The access is password protected, there are several ways how the set the password.
+
+If you are using podman then you can setup secrets like this:
+
+- `printf "<password>" | podman secret create yast_vnc_password -` \
+  This stores the password in plain text
+- `/usr/bin/vncpasswd.arg /dev/stdout "<password>" | podman secret create yast_vnc_password_bin -` \
+  This stores the password encrypted, this should be more secure than a plain
+  text password
+
+Another possibility, which works also with Docker, is to store the password in
+the host
+
+```shell
+/usr/bin/vncpasswd.arg /root/.vnc/passwd.yast "<password>"
+```
+
+:information_source: *Note: The `vncpasswd.arg` tool is included in the
+`xorg-x11-Xvnc` package.*
+
+:warning: *Warning: Use a strong password, YaST runs with administrator
+permissions and everybody who can access the web interface has full
+administrator access to the machine!*
+
+### Setting the SSL Certificate
+
+The web server uses the secure HTTPS connection. This ensures that the
+connection between the browser and the server is encrypted and nobody can read
+the communication.
+
+This requires an SSL certificate. You can provide your own valid certificate,
+for example using free [Let's Encrypt](https://letsencrypt.org/) certificate
+authority. If you do not specify your certificate then the starting script will
+generate a self-signed certificate. The problem is that the browsers will
+complain about unknown certificate authority.
+
+:warning: *When using a self-signed certificate you should compare the
+certificate fingerprint printed by the starting script with the certificate
+fingerprint reported by the browser. If they do not match then do not use
+that connection!*
+
+You need certificate in a combined PEM format which contains both the
+certificate and the secret key. If you are using podman then you can setup
+the secret like this:
+
+```shell
+podman secret create yast_vnc_ssl_cert ./certificate.pem
+```
+
+Another option, which also works with Docker, is to save the certificate
+to the `/root/.vnc/cert.pem` file in the host system.
+
+### Implementation
+
+The implementation uses these two important components:
+
+- [Xvnc](https://tigervnc.org/doc/Xvnc.html) - an X server which creates virtual
+screens which can be accessed via the VNC protocol
+- [novnc](https://novnc.com/info.html) - a VNC client written in pure JavaScript
+which can run in a browser, it is connected to the Xvnc server
+
+The connection between these two components is realized using an Unix socket file,
+the VNC service cannot be accessed from outside and is completely hidden inside
+the container to make it more secure.
+
 ## Summary
 
 It seems that it should be possible to fully manage the host system from
@@ -207,3 +287,6 @@ would run in a separate container, possibly managed by other tools.
 - https://build.opensuse.org/package/show/YaST:Head/yast-mgmt-qt-leap_latest - this
   OBS project extends the ncurses container image with Qt and X libraries so it can
   run the graphical UI
+- https://build.opensuse.org/package/show/YaST:Head/yast-mgmt-web-leap_latest - this
+  OBS project adds the `Xvnc` and `novnc` packages and an initialization script
+  which starts X session accessible using a web browser
