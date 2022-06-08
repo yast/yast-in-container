@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Jun  8 14:56:33 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
+
+- Added visual feedback when downloading the container image
+  in background
+- Updated documentation
+- 4.5.3
+
+-------------------------------------------------------------------
 Tue Jun  7 08:30:54 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
 
 - Added "yast2_web_container" script which runs YaST inside
