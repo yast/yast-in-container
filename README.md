@@ -117,18 +117,18 @@ The script prints the executed `podman` or `docker` command, if you need to
 run the container with different options just copy&paste the printed command
 to the terminal.
 
-## Tested Modules
+## Supported Modules
 
-This is a list of YaST modules which you can try with the testing image:
+Not all YaST modules can be directly used from a container, usually they need
+some small adjustments to work properly.
 
-- `yast2_container scc` - can register the system against SCC, RMT/SMT are also
-  supported, importing a self-signed SSL certificate works properly
-- `yast2_container repositories` - shows and edits the repositories from
-  the host system, should fully work
-- `yast2_container sw_single` - package installation works fine,
-  tha packages are correctly installed in the host system
-- `yast2_container key_manager` - displays the imported GPG keys
-  known by the package management
+The YaST control center in the container displays only the supported modules.
+Alternatively you can run `yast2_container -l` command to list the supported
+modules.
+
+The container image contains some more modules which are not displayed in the
+control center. These modules have been installed by dependencies but they will
+probably not work properly, do not use them.
 
 ## Implementation Details
 

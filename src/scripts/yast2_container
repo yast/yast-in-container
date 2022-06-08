@@ -88,8 +88,38 @@ else
     IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-qt-leap_latest"
 fi
 
+# display progress popup for downloading the image when running in X and not in terminal
+# use 3s timout, if the image is already downloaded the popup would be just flashing
+if [ -n "$DISPLAY" ] && [ ! -t 0 ]; then
+    # KDE specific tool
+    if command -v kdialog &> /dev/null; then
+        (
+            sleep 3
+            kdialog --title "Please wait" --passivepopup "Downloading container image..." 10000 &
+            wait 2> /dev/null || :
+        ) &
+        POPUP_PID=$!
+    # GNOME zenity in SLE15 unfortunately does not support the "--notification" option :-(
+    # fallback to the generic tool
+    elif command -v xmessage &> /dev/null; then
+        (
+            sleep 3
+            xmessage -center -buttons "" "Downloading container image..." &
+            wait 2> /dev/null || :
+        ) &
+        POPUP_PID=$!
+    fi
+fi
+
 # make sure the container image is up to date
 $TOOL pull $IMAGE_NAME
+
+if [ -n "$POPUP_PID" ]; then
+  pkill -P "$POPUP_PID"
+  kill "$POPUP_PID"
+  # avoid printing "Terminated" message at exit
+  wait "$POPUP_PID" 2> /dev/null || :
+fi
 
 # where is the host system root mounted in the container
 CHROOT_DIR="/mnt"
