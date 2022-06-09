@@ -17,7 +17,7 @@
 
 
 Name:           yast-in-container
-Version:        4.5.3
+Version:        4.5.4
 Release:        0
 Summary:        Experimental package for running YaST in a container
 License:        GPL-2.0-only
@@ -48,8 +48,8 @@ the host system.
 # install main scripts
 mkdir -p %{buildroot}/%{_sbindir}
 install -m 755 src/scripts/yast2_container %{buildroot}/%{_sbindir}
-install -m 755 src/scripts/yast2_web_container %{buildroot}/%{_sbindir}
-install -m 755 src/scripts/yast_container %{buildroot}/%{_sbindir}
+ln -s yast2_container %{buildroot}/%{_sbindir}/yast_container
+ln -s yast2_container %{buildroot}/%{_sbindir}/yast2_web_container
 
 # install desktop file
 mkdir -p %{buildroot}/%{_datadir}/applications
