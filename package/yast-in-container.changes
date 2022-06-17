@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Jun 17 13:51:27 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
+
+- Use the SLE BCI based container images
+- 4.5.5
+
+-------------------------------------------------------------------
 Thu Jun  9 13:06:24 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
 
 - Properly package symlinks
