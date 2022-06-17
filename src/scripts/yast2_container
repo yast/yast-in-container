@@ -66,7 +66,7 @@ EXTRA_ARGS=()
 
 # when called as "yast2_web_container" use the web image
 if [ "$(basename "$0")" == "yast2_web_container" ]; then
-    IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-web-leap_latest:latest"
+    IMAGE_NAME="registry.opensuse.org/yast/head/containers/containers/yast-mgmt-web"
 
     # add podman secret parameters, unfortunately the docker secrets are only
     # supported in the swarm (cluster) mode :-/
@@ -80,12 +80,12 @@ if [ "$(basename "$0")" == "yast2_web_container" ]; then
     fi
 # when called as "yast_container" or when $DISPLAY is not set use the smaller ncurses image
 elif [ "$(basename "$0")" == "yast_container" ] || [ -z "$DISPLAY" ]; then
-    IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-ncurses-leap_latest"
+    IMAGE_NAME="registry.opensuse.org/yast/head/containers/containers/yast-mgmt-ncurses"
 else
     # otherwise use the bigger Qt image and start the container with extra
     # options to allow accessing the local X server from inside the container
     EXTRA_OPTIONS=(-e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix:ro -v "$XAUTHORITY:$XAUTHORITY:ro" -e XAUTHORITY)
-    IMAGE_NAME="registry.opensuse.org/yast/head/containers_leap_latest/yast-mgmt-qt-leap_latest"
+    IMAGE_NAME="registry.opensuse.org/yast/head/containers/containers/yast-mgmt-qt:latest"
 fi
 
 # display progress popup for downloading the image when running in X and not in terminal
