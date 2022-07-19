@@ -129,6 +129,7 @@ set -x
 
 # start the container
 $TOOL run -it --privileged --pid=host --ipc=host --net=host \
-    -v /dev:/dev -v /:$CHROOT_DIR "${EXTRA_OPTIONS[@]}" \
+    -v /dev:/dev "${EXTRA_OPTIONS[@]}" \
+    --mount type=bind,source=/,target=$CHROOT_DIR,bind-propagation=rshared \
     -e ZYPP_LOCKFILE_ROOT=$CHROOT_DIR -e YAST_SCR_TARGET=$CHROOT_DIR \
     --rm $IMAGE_NAME "$CMD" "$@" "${EXTRA_ARGS[@]}"
