@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Jul 20 10:02:16 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
+
+- Set `LIBSTORAGE_LOCKFILE_ROOT` to the target root system
+- 4.5.7
+
+-------------------------------------------------------------------
 Tue Jul 19 10:07:48 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
 
 - Enable mount propagation between the container and the host

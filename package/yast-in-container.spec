@@ -17,7 +17,7 @@
 
 
 Name:           yast-in-container
-Version:        4.5.6
+Version:        4.5.7
 Release:        0
 Summary:        Experimental package for running YaST in a container
 License:        GPL-2.0-only
