@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Jul 25 15:31:45 UTC 2022 - Ancor Gonzalez Sosa <ancor@suse.com>
+
+- Set `LIBSTORAGE_ROOTPREFIX` to improve libstorage-ng probing
+  (bsc#1199840).
+- 4.5.8
+
+-------------------------------------------------------------------
 Wed Jul 20 10:02:16 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
 
 - Set `LIBSTORAGE_LOCKFILE_ROOT` to the target root system
