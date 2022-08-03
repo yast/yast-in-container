@@ -40,7 +40,7 @@ echo
 # check whether the host system is compatible with the container image,
 # can be disabled with VERSION_CHECK=0, use on your risk!!
 . /etc/os-release
-if [ "$VERSION_CHECK" != "0" ] && { [ "$VERSION_ID" != "15.4" ] || { [ "$ID" != "sles" ] && [ "$ID" != "opensuse-leap" ]; }; }; then
+if [ "$VERSION_CHECK" != "0" ] && [ "$ID" != "opensuse-tumbleweed" ] && [ "$ID" != "alp" ] && { [ "$VERSION_ID" != "15.4" ] || { [ "$ID" != "sles" ] && [ "$ID" != "opensuse-leap" ]; }; }; then
     echo "ERROR: Unsupported system: $PRETTY_NAME" >&2
     echo "Only 'openSUSE Leap 15.4' or 'SLES-15-SP4' systems are curently supported"
     echo "On your risk you can disable this check by setting VERSION_CHECK=0"

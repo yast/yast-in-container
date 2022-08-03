@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Aug  3 13:29:49 UTC 2022 - Josef Reidinger <jreidinger@suse.com>
+
+- add support for opensuse tumbleweed and ALP
+- 4.5.9
+
+-------------------------------------------------------------------
 Mon Jul 25 15:31:45 UTC 2022 - Ancor Gonzalez Sosa <ancor@suse.com>
 
 - Set `LIBSTORAGE_ROOTPREFIX` to improve libstorage-ng probing
