@@ -33,10 +33,6 @@ podman_secret_params () {
     done
 }
 
-echo "** WARNING: This is an experimental tool, do not use it in production systems!!"
-echo "** There is a risk of breaking the system or data loss!"
-echo
-
 # check whether the host system is compatible with the container image,
 # can be disabled with VERSION_CHECK=0, use on your risk!!
 . /etc/os-release
@@ -50,6 +46,18 @@ if [ "$VERSION_CHECK" != "0" ] && [ "$ID" != "opensuse-tumbleweed" ] && [ "$ID" 
     echo ""
     echo "On your risk you can disable this check by setting VERSION_CHECK=0"
     exit 1
+fi
+
+if [ -z "$YCONTAINERS_SKIP_WARNING" ]; then
+  echo "** WARNING: This is an experimental tool, do not use it in production systems!!"
+  echo "** There is a risk of breaking the system or data loss!"
+  echo
+  echo "** WARNING: Using development containers which is not stable."
+  echo
+  echo "Set env variable YCONTAINERS_SKIP_WARNING to skip this warning."
+  echo
+  echo "Press enter to continue or ctrl+c to abort."
+  read || exit $?
 fi
 
 # use podman, if not available try docker
