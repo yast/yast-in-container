@@ -4,6 +4,7 @@ Categories=Settings;System;X-SuSE-Core-System;X-SuSE-ControlCenter-System;X-GNOM
 Name=YaST in Container
 Icon=yast-in-container
 GenericName=Administrator Settings
+Terminal=true
 Exec=/usr/bin/xdg-su -c /usr/sbin/yast2_container
 Encoding=UTF-8
 Comment=Manage system-wide settings using a container
