@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Fri Aug  5 04:54:23 UTC 2022 - Josef Reidinger <jreidinger@suse.com>
+
+- Add more explicit warning till more official and stable place
+  for containers are created
+- 4.5.10
+
+-------------------------------------------------------------------
 Wed Aug  3 13:29:49 UTC 2022 - Josef Reidinger <jreidinger@suse.com>
 
 - add support for opensuse tumbleweed and ALP
