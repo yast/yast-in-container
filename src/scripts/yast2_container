@@ -52,12 +52,12 @@ if [ -z "$YCONTAINERS_SKIP_WARNING" ]; then
   echo "** WARNING: This is an experimental tool, do not use it in production systems!!"
   echo "** There is a risk of breaking the system or data loss!"
   echo
-  echo "** WARNING: Using development containers which is not stable."
+  echo "** WARNING: Using development containers which are not stable."
   echo
   echo "Set env variable YCONTAINERS_SKIP_WARNING to skip this warning."
   echo
   echo "Press enter to continue or ctrl+c to abort."
-  read -e || exit $?
+  read -r || exit 1
 fi
 
 # use podman, if not available try docker
