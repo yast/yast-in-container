@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Aug  8 15:08:01 UTC 2022 - Ladislav Slezák <lslezak@suse.cz>
+
+- Fixed broken ncurses UI when running in ALP (pass the TERM
+  variable from the host to the container)
+- 4.5.11
+
+-------------------------------------------------------------------
 Fri Aug  5 04:54:23 UTC 2022 - Josef Reidinger <jreidinger@suse.com>
 
 - Add more explicit warning till more official and stable place
