@@ -88,17 +88,23 @@ other images than just replace `ncurses` with `qt` or `web`.
 
 ### Podman
 
-Running in Podman is easy:
+Running in Podman is easy. You need to start the containers as the `root`
+user because it needs access permissions to the host system.
 
-```shell
-podman container runlabel run registry.opensuse.org/suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/yast-mgmt-ncurses:latest
-```
+At first check which command will be actually used for starting the container.
+For this use the `--display` option. You should always verify that starting
+command for security reasons.
 
-If you want to see the command which will be executed in advance then use the
-`--display` option:
 
 ```shell
 podman container runlabel --display run registry.opensuse.org/suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/yast-mgmt-ncurses:latest
+```
+
+If the command is correct then remove the `--display` option to start the
+container.
+
+```shell
+podman container runlabel run registry.opensuse.org/suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/yast-mgmt-ncurses:latest
 ```
 
 ### Docker
